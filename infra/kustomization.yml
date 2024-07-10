@@ -11,3 +11,13 @@ nameSuffix: -%image_suffix%
 images:
   - name: ghcr.io/byhemechi/pr-preview-test
     newTag: "%image_tag%"
+
+replacements:
+  - source:
+      kind: Service
+    targets:
+      - select:
+          name: pr-preview-test-route
+          kind: HTTPRoute
+        fieldPaths:
+          - "spec.rules.*.backendRefs.[name=pr-preview-test].name"

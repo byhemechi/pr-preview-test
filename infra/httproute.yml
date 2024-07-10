@@ -8,9 +8,10 @@ spec:
   rules:
     - matches:
         - path:
-            prefix: /
-      filters:
-        - type: RequestHeaderModifier
-      forwardTo:
-        - serviceName: pr-preview-test
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: pr-preview-test
           port: 80

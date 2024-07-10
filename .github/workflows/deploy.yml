@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "master"
+      - "main"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: pr-preview-test

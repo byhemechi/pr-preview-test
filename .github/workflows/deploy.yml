@@ -45,17 +45,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up kubectl
-        uses: azure/k8s-set-context@v4
-        with:
-          method: service-account
-          k8s-url: ${{ secrets.KUBE_HOST }}
-          token: ${{ secrets.KUBE_TOKEN }}
-
       - name: Set build variables
         run: |
           sed -i "s/%image_tag%/latest/g" infra/kustomization.yml
           sed -i "s/%image_suffix%/main/g" infra/kustomization.yml
       - name: Deploy
-        run: |
-          kubectl apply -k infra
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_HOST: ${{ secrets.KUBE_HOST }}
+          KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+        with:
+          args: apply -k infra --server-side

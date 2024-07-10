@@ -6,6 +6,8 @@ jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,15 +47,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set build variables
+      - uses: azure/setup-helm@v4.2.0
+        name: "Set up helm"
+      - name: "Write kubeconfig"
         run: |
-          sed -i "s/%image_tag%/latest/g" infra/kustomization.yml
-          sed -i "s/%image_suffix%/main/g" infra/kustomization.yml
-      - name: Deploy
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_HOST: ${{ secrets.KUBE_HOST }}
-          KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
-          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
-        with:
-          args: apply -k infra --server-side
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+      - name: "Deploy with Helm"
+        run: |
+          helm upgrade prpt chart --namespace prpt --create-namespace --install -f - <<EOF
+          image: ${{ needs.build.outputs.image }}
+          containersuffix: main
+          host: prpt.byhe.me
+          EOF

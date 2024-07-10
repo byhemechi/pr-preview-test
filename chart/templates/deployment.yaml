@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pr-preview-test-{{.Release.Name}}
+spec:
+  selector:
+    matchLabels:
+      app: pr-preview-test-{{.Release.Name}}
+  template:
+    metadata:
+      labels:
+        app: pr-preview-test-{{.Release.Name}}
+    spec:
+      containers:
+        - name: pr-preview-test-{{.Release.Name}}
+          image: {{ .Values.image }}
+
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          ports:
+            - containerPort: 8080
+              name: web

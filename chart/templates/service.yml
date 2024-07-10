@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pr-preview-test
+  name: pr-preview-test-{{.Release.Name}}
 spec:
   selector:
-    app: pr-preview-test
+    app: pr-preview-test-{{.Release.Name}}
   ports:
   - port: 80
     targetPort: web

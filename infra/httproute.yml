@@ -3,6 +3,10 @@ kind: HTTPRoute
 metadata:
   name: pr-preview-test-route
 spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: sadcloud
   hostnames:
     - prpt.byhe.me
   rules:

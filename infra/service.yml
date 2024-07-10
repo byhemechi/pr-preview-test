@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pr-preview-test
+spec:
+  selector:
+    app: pr-preview-test
+  ports:
+  - port: 80
+    targetPort: web
